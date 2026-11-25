@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Le français de Déterminus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* VOICE : la même page que « Les maths de Pointou », pour les vidéos de français.
+   IDEA : le tableau noir des vidéos, avec la troupe de la grammaire en ouverture.
+   PICTURE : les personnages dessinés (Déterminus, Verbus, Adjectine, les noms-cartes).
+   COLOUR and TYPE : ardoise + palette des vidéos ; Fredoka et Atkinson Hyperlegible.
+   LAYOUT : troupe, onglets par domaine, filtre par classe, cartes par rubrique, conseils. */
+:root {
+  --bg: #12171e; --surface: #1b222c; --line: #2b3542; --fg: #eef1f5; --muted: #9ba7b6;
+  --jaune: #FFD866; --bleu: #58C4DD; --vert: #83C167; --rouge: #FC6255;
+  --orange: #FFA94D; --violet: #C39BD3; --rose: #FF8FC7;
+  --font-display: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; min-width: 0; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body);
+  font-size: 1.05rem; line-height: 1.55; overflow-x: clip;
+  padding: env(safe-area-inset-top, 0px) max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px));
+}
+.wrap { max-width: 1080px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+
+.hero { padding-block: 40px 28px; display: grid; gap: 18px; }
+.eyebrow { font-family: var(--font-display); font-weight: 600; font-size: .85rem; letter-spacing: .12em; text-transform: uppercase; color: var(--rose); }
+.hero h1 { font-size: clamp(2.3rem, 6vw, 3.8rem); line-height: 1.02; font-weight: 700; }
+.hero h1 .p { color: var(--bleu); }
+.hero .lead { max-width: 60ch; color: var(--muted); margin: 0; font-size: 1.1rem; }
+.hero .lead strong { color: var(--fg); }
+
+.troupe { display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: flex-end; padding: 14px 0 0; border-bottom: 2px dashed var(--line); }
+.perso { display: grid; justify-items: center; gap: 2px; width: 104px; }
+.perso svg { width: 78px; height: 78px; transition: transform .25s; }
+.perso:hover svg { transform: translateY(-6px) rotate(-4deg); }
+.perso span { font-family: var(--font-display); font-weight: 600; font-size: .9rem; text-align: center; }
+.perso small { color: var(--muted); font-size: .76rem; text-align: center; line-height: 1.2; min-height: 2.4em; }
+
+.onglets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 26px; border-bottom: 2px solid var(--line); }
+.onglet {
+  font: 600 1.2rem var(--font-display); color: var(--muted); cursor: pointer; background: transparent;
+  border: 2px solid transparent; border-bottom: none; border-radius: 12px 12px 0 0;
+  padding: 10px 20px; margin-bottom: -2px; display: inline-flex; align-items: center; gap: 10px; min-height: 44px;
+}
+.onglet svg { width: 34px; height: 34px; }
+.onglet:hover { color: var(--fg); }
+.onglet[aria-selected="true"] { color: var(--fg); background: var(--surface); border-color: var(--line); }
+.onglet .n { font: 400 .9rem var(--font-body); color: var(--muted); }
+.sommaire { display: flex; flex-wrap: wrap; gap: 8px 18px; padding-bottom: 4px; }
+.sommaire button { font: 400 .95rem var(--font-body); color: var(--bleu); background: none; border: none; padding: 4px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line); }
+.sommaire button:hover { text-decoration-color: var(--bleu); }
+
+.filtres { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; padding-block: 22px 8px; }
+.filtres .lbl { font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 600 1rem var(--font-display); color: var(--fg); cursor: pointer; background: transparent; border: 2px solid var(--line); border-radius: 999px; padding: 6px 16px; min-height: 40px; }
+.chip:hover { border-color: var(--muted); }
+.chip[aria-pressed="true"] { background: var(--jaune); border-color: var(--jaune); color: #1a1a1a; }
+.chip:focus-visible, .btn:focus-visible, .onglet:focus-visible, .fermer:focus-visible { outline: 3px solid var(--bleu); outline-offset: 2px; }
+
+.theme { padding-top: 26px; display: grid; gap: 14px; }
+.theme h2 { font-size: 1.5rem; font-weight: 600; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.theme h2 .n { font: 400 .95rem var(--font-body); color: var(--muted); }
+.grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+.carte { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; }
+.vignette {
+  position: relative; aspect-ratio: 16 / 7; background: #0b0f14; display: flex; align-items: center;
+  justify-content: space-between; gap: 8px; padding: 0 18px 0 22px; border-bottom: 3px solid var(--c, var(--jaune));
+}
+.vignette .formule { font: 600 clamp(1.3rem, 4vw, 1.75rem) var(--font-display); color: var(--c, var(--jaune)); white-space: nowrap; }
+.vignette .persos { display: flex; align-items: flex-end; flex: none; }
+.vignette svg { width: 78px; height: 78px; }
+.vignette .persos svg + svg { width: 58px; height: 58px; margin-left: -12px; }
+.niveau { position: absolute; top: 10px; left: 12px; font: 700 .8rem var(--font-display); background: var(--fg); color: #12171e; border-radius: 6px; padding: 1px 8px; }
+.corps { padding: 16px 18px 18px; display: grid; gap: 8px; align-content: start; }
+.corps h3 { font-size: 1.22rem; font-weight: 600; line-height: 1.2; }
+.corps p { margin: 0; color: var(--muted); font-size: .97rem; }
+.pied { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; }
+.duree { font-size: .88rem; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.btn { font: 600 1rem var(--font-display); text-decoration: none; border-radius: 10px; padding: 8px 16px; min-height: 44px; background: var(--c, var(--jaune)); color: #12171e; display: inline-flex; gap: 8px; align-items: center; }
+.btn:hover { filter: brightness(1.08); }
+.btn.bientot { background: transparent; color: var(--muted); border: 2px dashed var(--line); cursor: default; }
+button.btn { border: none; cursor: pointer; }
+
+.lecteur { width: min(1100px, calc(100vw - 32px)); max-width: 100%; padding: 0; border: 2px solid var(--line); border-radius: 16px; background: var(--bg); color: var(--fg); overflow: hidden; }
+.lecteur::backdrop { background: rgba(5, 8, 12, .82); }
+.lecteur-tete { display: flex; align-items: center; gap: 12px; padding: 12px 14px 12px 18px; border-bottom: 3px solid var(--c, var(--jaune)); }
+.lecteur-tete svg { width: 44px; height: 44px; flex: none; }
+.lecteur-tete h2 { font-size: 1.25rem; font-weight: 600; flex: 1; }
+.lecteur-tete .niveau { position: static; }
+.fermer { font: 700 1.4rem var(--font-display); line-height: 1; width: 44px; height: 44px; border-radius: 10px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); cursor: pointer; flex: none; }
+.ecran { aspect-ratio: 16 / 9; background: #000; }
+.ecran iframe { width: 100%; height: 100%; border: 0; display: block; }
+.lecteur-pied { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; padding: 12px 18px; color: var(--muted); font-size: .92rem; }
+.lecteur-pied a, footer a { color: var(--bleu); }
+.vide { color: var(--muted); padding: 24px 0; }
+
+.conseils { margin-top: 40px; border: 2px solid var(--line); border-radius: 16px; padding: 22px; display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center; }
+.conseils svg { width: 96px; height: 96px; }
+.conseils h2 { font-size: 1.35rem; font-weight: 600; margin-bottom: 8px; color: var(--bleu); }
+.conseils ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
+.conseils li::marker { color: var(--bleu); }
+footer { margin-top: 32px; color: var(--muted); font-size: .88rem; }
+@media (max-width: 520px) {
+  .conseils { grid-template-columns: 1fr; }
+  .perso { width: 80px; } .perso svg { width: 62px; height: 62px; }
+}
+@media (prefers-reduced-motion: reduce) { .perso svg { transition: none; } }
+</style></head><body>
+
+<!-- Les personnages (dessins repris des vidéos) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="yx"><circle r="1" fill="#fff"/><circle r=".45" cy=".12" fill="#111"/></g>
+    <symbol id="determinus" viewBox="0 0 100 100">
+      <path d="M58 64 L86 92" stroke="#8B5A2B" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="44" cy="52" r="26" fill="rgba(88,196,221,.3)" stroke="#bfc6cf" stroke-width="6"/>
+      <use href="#yx" transform="translate(37 48) scale(5)"/><use href="#yx" transform="translate(51 48) scale(5)"/>
+      <path d="M38 60 Q44 66 50 60" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M26 30 A18 18 0 0 1 62 30 Z" fill="#8B6F47"/>
+      <rect x="19" y="28" width="50" height="6" rx="3" fill="#6B5233"/>
+      <circle cx="44" cy="12" r="2.5" fill="#6B5233"/>
+    </symbol>
+    <symbol id="verbus" viewBox="0 0 100 100">
+      <path d="M40 58 L22 74 M60 58 L78 74" stroke="#6A3FA0" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="21" cy="75" r="4" fill="#F2C9A0"/><circle cx="79" cy="75" r="4" fill="#F2C9A0"/>
+      <polygon points="40,54 60,54 76,96 24,96" fill="#6A3FA0" stroke="#C39BD3" stroke-width="2"/>
+      <g fill="#FFD866"><circle cx="34" cy="90" r="2.2"/><circle cx="64" cy="88" r="2.2"/><circle cx="50" cy="66" r="2"/></g>
+      <circle cx="50" cy="42" r="12" fill="#F2C9A0"/>
+      <polygon points="39,45 61,45 50,68" fill="#fff"/>
+      <use href="#yx" transform="translate(46 39) scale(3)"/><use href="#yx" transform="translate(54 39) scale(3)"/>
+      <polygon points="36,32 64,32 58,4" fill="#2B3A8C" stroke="#58C4DD" stroke-width="1.5" stroke-linejoin="round"/>
+      <ellipse cx="50" cy="32" rx="19" ry="4" fill="#2B3A8C" stroke="#58C4DD" stroke-width="1.5"/>
+      <g fill="#FFD866"><circle cx="49" cy="22" r="2.4"/><circle cx="55" cy="13" r="1.7"/></g>
+    </symbol>
+    <symbol id="adjectine" viewBox="0 0 100 100">
+      <g transform="rotate(-15 50 50)">
+        <path d="M50 46 V94" stroke="#F5F0E6" stroke-width="7" stroke-linecap="round"/>
+        <path d="M50 84 V94" stroke="#FF8FC7" stroke-width="7" stroke-linecap="round"/>
+        <polygon points="50,50 38,44 38,56" fill="#FF8FC7"/><polygon points="50,50 62,44 62,56" fill="#FF8FC7"/>
+        <polygon points="50,4 57.6,19.6 74.7,22 62.3,34 65.3,51 50,43 34.7,51 37.7,34 25.3,22 42.4,19.6" fill="#FFD866" stroke="#FFA94D" stroke-width="2.5" stroke-linejoin="round"/>
+        <use href="#yx" transform="translate(45 26) scale(3.6)"/><use href="#yx" transform="translate(55 26) scale(3.6)"/>
+        <path d="M45 34 Q50 38 55 34" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+      </g>
+    </symbol>
+    <symbol id="nom" viewBox="0 0 100 100">
+      <path d="M40 80 L36 94 M60 80 L64 94" stroke="#58C4DD" stroke-width="4" stroke-linecap="round"/>
+      <rect x="18" y="16" width="64" height="64" rx="10" fill="#2E3440" stroke="#58C4DD" stroke-width="3.5"/>
+      <use href="#yx" transform="translate(43 34) scale(4.5)"/><use href="#yx" transform="translate(57 34) scale(4.5)"/>
+      <path d="M45 44 Q50 48 55 44" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+      <text x="50" y="68" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="600" font-size="17" fill="#fff">chat</text>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Français · Collège</div>
+    <h1>Le français de <span class="p">Déterminus</span></h1>
+    <p class="lead">Des petites vidéos pour revoir la grammaire à la maison, quand tu veux et autant de fois que tu veux. <strong>Quand le compte à rebours démarre, mets sur pause et cherche !</strong></p>
+    <div class="troupe" aria-label="Les personnages des vidéos">
+      <div class="perso"><svg><use href="#determinus"/></svg><span>Inspecteur Déterminus</span><small>enquête sur les déterminants</small></div>
+      <div class="perso"><svg><use href="#verbus"/></svg><span>Verbus</span><small>le magicien des verbes</small></div>
+      <div class="perso"><svg><use href="#adjectine"/></svg><span>Adjectine</span><small>la baguette des adjectifs</small></div>
+      <div class="perso"><svg><use href="#nom"/></svg><span>Les noms</span><small>toujours au cœur de la phrase</small></div>
+    </div>
+  </header>
+
+  <div class="onglets" role="tablist" aria-label="Domaines" id="onglets"></div>
+  <nav class="filtres" aria-label="Filtrer les vidéos">
+    <span class="lbl">Ma classe</span>
+    <div class="chips" id="chips-niveau"></div>
+  </nav>
+  <nav class="sommaire" id="sommaire" aria-label="Rubriques"></nav>
+  <main id="liste" role="tabpanel"></main>
+
+  <section class="conseils">
+    <svg aria-hidden="true"><use href="#determinus"/></svg>
+    <div>
+      <h2>Les conseils de l'inspecteur Déterminus</h2>
+      <ul>
+        <li>Regarde la vidéo une première fois en entier, sans rien écrire.</li>
+        <li>Au compte à rebours, mets sur pause et cherche la réponse sur ton cahier avant de voir la correction.</li>
+        <li>Recopie l'encadré « Je retiens » s'il n'est pas déjà dans ton cours.</li>
+        <li>Une question ? Note-la et pose-la au prochain cours.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>Vidéos hébergées sur Tubes (apps.education.fr), la plateforme de l'Éducation nationale : sans publicité et sans compte à créer.<span id="chaine"></span></footer>
+
+  <dialog class="lecteur" id="lecteur" aria-labelledby="lecteur-titre">
+    <div class="lecteur-tete">
+      <svg aria-hidden="true"><use id="lecteur-perso" href="#determinus"/></svg>
+      <h2 id="lecteur-titre">Vidéo</h2>
+      <span class="niveau" id="lecteur-niveau"></span>
+      <button class="fermer" id="lecteur-fermer" aria-label="Fermer la vidéo">×</button>
+    </div>
+    <div class="ecran" id="lecteur-ecran"></div>
+    <div class="lecteur-pied">
+      <span>Au compte à rebours, mets sur pause et cherche !</span>
+      <a id="lecteur-lien" href="#" target="_blank" rel="noopener">La vidéo ne s'affiche pas ? Ouvre-la sur Tubes</a>
+    </div>
+  </dialog>
+</div>
+
+<script>
+{
+/* ================================================================
+   LES VIDÉOS
+   - Lien Tubes : le coller entre les guillemets de « lien ».
+     Sans lien, la carte affiche « Bientôt en ligne ».
+   - Nouvelle vidéo : copier un bloc { … } de VIDEOS, le coller à la
+     suite et changer les textes. « theme » doit être l'id d'une rubrique
+     de ONGLETS. Un domaine n'apparaît que s'il a au moins une vidéo.
+   - perso : determinus, verbus, adjectine ou nom (un ou deux, séparés
+     par une virgule).
+   ================================================================ */
+const ONGLETS = [
+  { id: "grammaire", nom: "Grammaire", icone: "determinus", rubriques: [
+    { id: "classes", nom: "Les classes de mots" },
+    { id: "fonctions", nom: "Les fonctions dans la phrase" },
+    { id: "phrase", nom: "La phrase" },
+  ]},
+  { id: "conjugaison", nom: "Conjugaison", icone: "verbus", rubriques: [
+    { id: "temps", nom: "Les temps de l'indicatif" },
+    { id: "modes", nom: "Les autres modes" },
+  ]},
+  { id: "orthographe", nom: "Orthographe", icone: "adjectine", rubriques: [
+    { id: "accords", nom: "Les accords" },
+    { id: "homophones", nom: "Les homophones" },
+  ]},
+  { id: "lexique", nom: "Vocabulaire", icone: "nom", rubriques: [
+    { id: "formation", nom: "La formation des mots" },
+  ]},
+];
+const VIDEOS = [
+  { theme: "classes", niveau: "6e", perso: "determinus", c: "var(--bleu)", formule: "le, la ou les ?",
+    titre: "Comment choisir son déterminant ?",
+    resume: "L'inspecteur Déterminus enquête : genre et nombre du nom, sens du déterminant, élision et articles contractés.",
+    duree: "4 min 45", lien: "https://tube-sciences-technologies.apps.education.fr/w/b5ypzJAcGfMC5HB4m9mbWU" },
+  { theme: "classes", niveau: "6e", perso: "verbus,adjectine", c: "var(--violet)", formule: "dort ≠ petit",
+    titre: "Verbe ou adjectif ?",
+    resume: "Verbus le magicien change de forme, Adjectine la baguette décrit le nom : les tests pour les reconnaître.",
+    duree: "4 min 48", lien: "https://tube-sciences-technologies.apps.education.fr/w/1hAGKcs8Au3gnNbCqvszYi" },
+];
+const NIVEAUX = ["Tous", "6e", "5e", "4e", "3e"];
+
+/* Adresse de la chaîne Tubes de français, entre les guillemets (laisser vide sinon). */
+const CHAINE = "";
+
+/* true : les vidéos se lisent dans une fenêtre sur la page (site GitHub, ENT).
+   false : le bouton ouvre la vidéo sur Tubes. */
+const INTEGRER = true;
+
+/* https://…/w/ID  →  https://…/videos/embed/ID (lecteur Tubes épuré) */
+function lienIntegre(lien) {
+  const m = lien.match(/^(https:\/\/[^/]+)\/w\/([A-Za-z0-9]+)/);
+  return m ? `${m[1]}/videos/embed/${m[2]}?title=0&warningTitle=0&peertubeLink=0&autoplay=1` : lien;
+}
+const esc = s => String(s).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+const persos = v => v.perso.split(",").map(p => p.trim());
+
+if (CHAINE) {
+  const s = document.getElementById("chaine");
+  s.append(" Toutes nos vidéos sont aussi sur ");
+  const a = document.createElement("a");
+  a.href = CHAINE; a.target = "_blank"; a.rel = "noopener"; a.textContent = "notre chaîne Tubes";
+  s.append(a, ".");
+}
+
+const lecteur = document.getElementById("lecteur");
+function ouvrirVideo(v) {
+  lecteur.style.setProperty("--c", v.c);
+  document.getElementById("lecteur-titre").textContent = v.titre;
+  document.getElementById("lecteur-niveau").textContent = v.niveau;
+  document.getElementById("lecteur-perso").setAttribute("href", "#" + persos(v)[0]);
+  document.getElementById("lecteur-lien").href = v.lien;
+  const f = document.createElement("iframe");
+  f.src = lienIntegre(v.lien); f.title = v.titre;
+  f.allow = "autoplay; fullscreen; picture-in-picture"; f.setAttribute("allowfullscreen", "");
+  document.getElementById("lecteur-ecran").replaceChildren(f);
+  lecteur.showModal();
+}
+lecteur.addEventListener("close", () => document.getElementById("lecteur-ecran").replaceChildren());
+lecteur.addEventListener("click", e => { if (e.target === lecteur) lecteur.close(); });
+document.getElementById("lecteur-fermer").addEventListener("click", () => lecteur.close());
+document.getElementById("liste").addEventListener("click", e => {
+  const b = e.target.closest("[data-video]"); if (!b) return;
+  ouvrirVideo(VIDEOS[+b.dataset.video]);
+});
+
+const domaineDe = v => ONGLETS.find(o => o.rubriques.some(r => r.id === v.theme));
+const visibles = ONGLETS.filter(o => VIDEOS.some(v => domaineDe(v) === o));
+
+let niveau = "Tous";
+try { niveau = localStorage.getItem("fr-niveau") || "Tous"; } catch (e) {}
+if (!NIVEAUX.includes(niveau)) niveau = "Tous";
+let onglet = (location.hash || "").slice(1);
+if (!visibles.some(o => o.id === onglet)) {
+  try { onglet = localStorage.getItem("fr-onglet") || ""; } catch (e) {}
+  if (!visibles.some(o => o.id === onglet)) onglet = visibles.length ? visibles[0].id : "";
+}
+
+function carte(v) {
+  const bouton = v.lien
+    ? (INTEGRER
+        ? `<button class="btn" data-video="${VIDEOS.indexOf(v)}">▶ Regarder</button>`
+        : `<a class="btn" href="${esc(v.lien)}" target="_blank" rel="noopener">▶ Regarder</a>`)
+    : `<span class="btn bientot">Bientôt en ligne</span>`;
+  return `<article class="carte" style="--c:${esc(v.c)}">
+    <div class="vignette"><span class="niveau">${esc(v.niveau)}</span>
+      <span class="formule">${esc(v.formule)}</span>
+      <span class="persos">${persos(v).map(p => `<svg aria-hidden="true"><use href="#${esc(p)}"/></svg>`).join("")}</span></div>
+    <div class="corps"><h3>${esc(v.titre)}</h3><p>${esc(v.resume)}</p>
+      <div class="pied"><span class="duree">${v.duree ? "⏱ " + esc(v.duree) : ""}</span>${bouton}</div></div>
+  </article>`;
+}
+
+function rendre() {
+  document.getElementById("chips-niveau").innerHTML = NIVEAUX.map(n =>
+    `<button class="chip" aria-pressed="${n === niveau}" data-n="${n}">${n}</button>`).join("");
+  const liste = VIDEOS.filter(v => niveau === "Tous" || v.niveau === niveau);
+  document.getElementById("onglets").innerHTML = visibles.map(o => {
+    const n = liste.filter(v => domaineDe(v) === o).length;
+    return `<button class="onglet" role="tab" id="tab-${o.id}" data-o="${o.id}" aria-selected="${o.id === onglet}">
+      <svg aria-hidden="true"><use href="#${o.icone}"/></svg>${o.nom} <span class="n">${n}</span></button>`;
+  }).join("");
+  const o = visibles.find(x => x.id === onglet);
+  const main = document.getElementById("liste");
+  if (!o) { main.innerHTML = `<p class="vide">Les premières vidéos arrivent bientôt !</p>`; return; }
+  const rubs = o.rubriques.map(r => ({ ...r, vs: liste.filter(v => v.theme === r.id) })).filter(r => r.vs.length);
+  document.getElementById("sommaire").innerHTML = rubs.length > 1
+    ? rubs.map(r => `<button data-r="${r.id}">${r.nom}</button>`).join("") : "";
+  main.setAttribute("aria-labelledby", "tab-" + onglet);
+  main.innerHTML = rubs.map(r =>
+    `<section class="theme" id="r-${r.id}"><h2>${r.nom} <span class="n">${r.vs.length} vidéo${r.vs.length > 1 ? "s" : ""}</span></h2>
+      <div class="grille">${r.vs.map(carte).join("")}</div></section>`).join("") ||
+    `<p class="vide">Pas encore de vidéo de ${o.nom.toLowerCase()} pour la ${niveau}. Elles arrivent bientôt !</p>`;
+}
+
+document.getElementById("onglets").addEventListener("click", e => {
+  const b = e.target.closest(".onglet"); if (!b) return;
+  onglet = b.dataset.o;
+  try { localStorage.setItem("fr-onglet", onglet); } catch (err) {}
+  try { history.replaceState(null, "", "#" + onglet); } catch (err) {}
+  rendre();
+});
+document.getElementById("sommaire").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const cible = document.getElementById("r-" + b.dataset.r);
+  if (cible) cible.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+});
+document.getElementById("chips-niveau").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  niveau = b.dataset.n;
+  try { localStorage.setItem("fr-niveau", niveau); } catch (err) {}
+  rendre();
+});
+rendre();
+}
+</script>
+</body></html>
